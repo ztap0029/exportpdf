@@ -1,6 +1,6 @@
 {
   "name": "cloud_export",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "This is the desktop-app for pdf exports and auto scheduler jobs",
   "main": "main.js",
   "scripts": {

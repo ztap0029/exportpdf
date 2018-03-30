@@ -18,12 +18,85 @@ var mainWindow = null;
 
 
   if (isDev) {
-    // autoUpdater.on('checking-for-update', () => {
-    //   console.log('-------checking-for-update------');
-    //     //console.log("ok:"+res);
-    //   });
+    autoUpdater.on('update-available', (info) => {
+      //sendStatusToWindow('Update available.');
+      console.log('-------update available------');
+    })
+    autoUpdater.on('update-not-available', (info) => {
+    //  sendStatusToWindow('Update not available.');
+      //console.log('-------update not available------');
+      const dialogOpts = {
+          type: 'info',
+          buttons: ['Restart', 'Later'],
+          title: 'Application Update',
+          message: 'New version of the app is not available!',
+          detail: 'To install the latest updates, Please choose "Restart" or else you can choose "Later" option!'
+        }
 
+        dialog.showMessageBox(dialogOpts, (response) => {
+          console.log("Continue: "+response);
+          if (response === 0) autoUpdater.quitAndInstall()
+        })
+    })
+    autoUpdater.on('error', (err) => {
+      //sendStatusToWindow('Error in auto-updater. ' + err);
+      console.log('errrrrrr');
+    })
+    autoUpdater.on('download-progress', (progressObj) => {
+      let log_message = "Download speed: " + progressObj.bytesPerSecond;
+      log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+      log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+      sendStatusToWindow(log_message);
+    })
+    // autoUpdater.on('update-downloaded', (info) => {
+    //   sendStatusToWindow('Update downloaded,  will install in 1 seconds');
+    //   console.log('will install----------');
+    // });
 
+    autoUpdater.on('update-downloaded', function (event, releaseNotes, releaseName) {
+      // const dialogOpts = {
+      //    type: 'info',
+      //    buttons: ['Restart', 'Later'],
+      //    title: 'Application Update',
+      //    message: process.platform === 'win32' ? releaseNotes : releaseName,
+      //    detail: 'A new version has been downloaded. Restart the application to apply the updates.'
+      //   }
+      //
+      //   dialog.showMessageBox(dialogOpts, (response) => {
+      //    if (response === 0) autoUpdater.quitAndInstall()
+      //   })
+      const dialogOpts = {
+          type: 'info',
+          buttons: ['Restart', 'Later'],
+          title: 'Application Update',
+          message: 'New version of the app is available!',
+          detail: 'To install the latest updates, Please choose "Restart" or else you can choose "Later" option!'
+        }
+
+        dialog.showMessageBox(dialogOpts, (response) => {
+          console.log("Continue: "+response);
+          if (response === 0) autoUpdater.quitAndInstall()
+        })
+    });
+
+    autoUpdater.checkForUpdates();
+
+    autoUpdater.on('error', message => {
+      console.log('There was a problem updating the application');
+      console.log(message);
+      const dialogOpts = {
+          type: 'error',
+          buttons: ['Ok'],
+          title: 'Application Error',
+          message: 'There was a problem updating the application',
+          detail: message
+        }
+
+        dialog.showMessageBox(dialogOpts, (response) => {
+          console.log("Continue: "+response);
+          if (response === 0) autoUpdater.quitAndInstall()
+        })
+    })
 
     } else {
     	console.log('Running in production');
@@ -33,7 +106,19 @@ var mainWindow = null;
       })
       autoUpdater.on('update-not-available', (info) => {
       //  sendStatusToWindow('Update not available.');
-        console.log('-------update not available------');
+        //console.log('-------update not available------');
+        const dialogOpts = {
+            type: 'info',
+            buttons: ['Restart', 'Later'],
+            title: 'Application Update',
+            message: 'New version of the app is not available!',
+            detail: 'To install the latest updates, Please choose "Restart" or else you can choose "Later" option!'
+          }
+
+          dialog.showMessageBox(dialogOpts, (response) => {
+            console.log("Continue: "+response);
+            if (response === 0) autoUpdater.quitAndInstall()
+          })
       })
       autoUpdater.on('error', (err) => {
         //sendStatusToWindow('Error in auto-updater. ' + err);
@@ -106,7 +191,7 @@ app.on('ready',function(){
   }));
 
   // Open the DevTools
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   // notify user if update is available
    autoUpdater.checkForUpdatesAndNotify();
