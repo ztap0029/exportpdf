@@ -5,20 +5,20 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "dist":"build"
+    "dist": "build"
   },
-  "repository":"https://github.com/ztap0029/exportpdf.git",
+  "repository": "https://github.com/ztap0029/exportpdf.git",
   "author": "Brixxs",
   "license": "ISC",
   "build": {
-   "appId": "com.Brixxs.exportpdf",
-   "win": {
-     "target": "nsis",
-     "icon": "icons/icon.ico"
-   }
+    "appId": "com.Brixxs.exportpdf",
+    "win": {
+      "target": "nsis",
+      "icon": "icons/icon.ico"
+    }
   },
   "devDependencies": {
-    "electron": "^1.7.10"
+    "electron": "^1.8.2-beta.2"
   },
   "dependencies": {
     "async": "^2.6.0",
