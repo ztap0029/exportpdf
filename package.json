@@ -1,0 +1,39 @@
+{
+  "name": "cloud_export",
+  "version": "0.0.1",
+  "description": "This is the desktop-app for pdf exports and auto scheduler jobs",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist":"build"
+  },
+  "repository":"https://github.com/ztap0029/exportpdf.git",
+  "author": "Brixxs",
+  "license": "ISC",
+  "build": {
+   "appId": "com.Brixxs.exportpdf",
+   "win": {
+     "target": "nsis",
+     "icon": "icons/icon.ico"
+   }
+  },
+  "devDependencies": {
+    "electron": "^1.7.10"
+  },
+  "dependencies": {
+    "async": "^2.6.0",
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "download-file": "^0.1.5",
+    "electron-builder": "^20.8.1",
+    "electron-is-dev": "^0.3.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "electron-updater": "^2.21.1",
+    "express": "^4.16.2",
+    "later": "^1.2.0",
+    "multer": "^1.3.0",
+    "node-localstorage": "^1.3.0",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2"
+  }
+}

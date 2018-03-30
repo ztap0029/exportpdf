@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CloudExport</title>
+  <base href="./">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="assets/css/bootstrap.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+  <link href="assets/css/ng2-toastr.min.css" rel="stylesheet" />
+  <script src="assets/js/jquery.min.js" type="text/javascript"></script>
+  <script src="jquery.js" type="text/javascript"></script>
+  <script src="assets/js/bootstrap.js" type="text/javascript"></script>
+</head>
+<body>
+  <div id="messages"></div>
+  <app-root></app-root>
+<script type="text/javascript" src="inline.bundle.js"></script><script type="text/javascript" src="polyfills.bundle.js"></script><script type="text/javascript" src="scripts.bundle.js"></script><script type="text/javascript" src="styles.bundle.js"></script>
+<script type="text/javascript" src="vendor.bundle.js"></script>
+<script type="text/javascript" src="main.bundle.js"></script>
+
+<!-- get message for updates -->
+<script type="text/javascript">
+// Listen for messages
+const {ipcRenderer} = require('electron');
+ipcRenderer.on('message', function(event, text) {
+var container = document.getElementById('messages');
+var message = document.createElement('div');
+message.innerHTML = text;
+container.appendChild(message);
+})
+</script>
+</body>
+</html>
