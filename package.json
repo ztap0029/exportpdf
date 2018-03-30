@@ -7,7 +7,13 @@
     "start": "electron .",
     "dist": "build"
   },
-  "repository": "https://github.com/ztap0029/exportpdf.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ztap0029/exportpdf.git"
+  },
+  "publish": {
+      "provider": "github"
+    },
   "author": "Brixxs",
   "license": "ISC",
   "build": {
@@ -18,14 +24,14 @@
     }
   },
   "devDependencies": {
-    "electron": "^1.8.2-beta.2"
+    "electron": "^1.8.2-beta.2",
+    "electron-builder": "^20.8.1"
   },
   "dependencies": {
     "async": "^2.6.0",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
     "download-file": "^0.1.5",
-    "electron-builder": "^20.8.1",
     "electron-is-dev": "^0.3.0",
     "electron-squirrel-startup": "^1.0.0",
     "electron-updater": "^2.21.1",
