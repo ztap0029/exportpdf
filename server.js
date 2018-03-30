@@ -184,6 +184,7 @@ server.use('/api/upload/logo',function(req,res,next){
   process.on('uncaughtException', function (error) {
       // Handle the error
       console.log("uncaughtException");
+      console.log(error);
   });
 
 server.listen(port,function(){
