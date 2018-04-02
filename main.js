@@ -1,12 +1,14 @@
 var server = require('./server');
 const electron = require('electron');
 const {autoUpdater} = require('electron-updater');
+const ProgressBar = require('electron-progressbar');
 const {dialog} = require('electron')
 const isDev = require('electron-is-dev');
 const app = electron.app;
 //autoUpdater.requestHeaders = { "PRIVATE-TOKEN": "Personal access Token" };
 autoUpdater.autoDownload = false;
 autoUpdater.autoInstallOnAppQuit = false;
+//autoUpdater.setFeedURL('http://localhost:3000/dist/');
 // this should be placed at top of main.js to handle setup events quickly
 if (handleSquirrelEvent(app)) {
     // squirrel event handled and app will exit in 1000ms, so don't do anything else
@@ -16,6 +18,8 @@ const path = require('path');
 const url = require('url');
 const BrowserWindow = electron.BrowserWindow;
 var mainWindow = null;
+var progressBar = null;
+var totalFileSize = 0;
 
   if (isDev) {
     if(process.platform === 'win32'){
@@ -23,16 +27,18 @@ var mainWindow = null;
       autoUpdater.on('update-available', (info) => {
         //sendStatusToWindow('Update available.');
         console.log(info);
+        totalFileSize = info.files[0].size;
+        console.log("totalFileSize: "+totalFileSize);
         var rex = /(<([^>]+)>)/ig;
         var releaseNotes = info.releaseNotes.replace(rex , "");
 
         const dialogOpts = {
             type: 'info',
-            buttons: ['Right Now', 'Later'],
+            buttons: ['Install', 'Later'],
             cancelId: 1,
             title: 'Application Update',
             message: 'New version is available!',
-            detail: 'Version: '+info.version+'\nReleaseDate: '+info.releaseDate+'\nReleaseName: '+info.releaseName+'\nReleaseNotes: '+releaseNotes+'\n\nTo install the latest updates, Please choose "Right Now" or else you can choose "Later" option!'
+            detail: 'Version: '+info.version+'\nReleaseDate: '+info.releaseDate+'\nReleaseName: '+info.releaseName+'\nReleaseNotes: '+releaseNotes+'\n\nTo install the latest updates, Please choose "Install" or else you can choose "Later" option!'
           }
 
           dialog.showMessageBox(dialogOpts, (response) => {
@@ -47,8 +53,34 @@ var mainWindow = null;
                 }
                 dialog.showMessageBox(dialogOptions, (response) => {
                   autoUpdater.downloadUpdate();
+                  progressBar = new ProgressBar({
+                  indeterminate: false,
+                  text: 'Downloading latest updates...',
+                  detail: 'Wait...'
+                  });
+                  autoUpdater.on('download-progress', (progressObj) => {
+                    console.log('progress start...');
+                    console.log(progressObj);
+                    let log_message = "Download speed: " + progressObj.bytesPerSecond;
+                    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+                    log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+                    progressBar
+                        .on('completed', function() {
+                          console.info('completed...');
+                          progressBar.detail = 'Download completed.';
+                        })
+                        .on('aborted', function(value) {
+                          console.info('aborted... ${value}');
+                        })
+                        .on('progress', function(value) {
+                          progressBar.detail = log_message;
+                        });
+                      progressBar.value = progressObj.percent;
+
+                  })
                   autoUpdater.on('update-downloaded', function (event, releaseNotes, releaseName) {
                     console.log('------------xxxxxxxxxx-------');
+                    progressBar.close();
                     const dialogOpts = {
                         type: 'info',
                         buttons: ['Restart', 'Later'],
@@ -98,16 +130,18 @@ var mainWindow = null;
         autoUpdater.on('update-available', (info) => {
           //sendStatusToWindow('Update available.');
           console.log(info);
+          totalFileSize = info.files[0].size;
+          console.log("totalFileSize: "+totalFileSize);
           var rex = /(<([^>]+)>)/ig;
           var releaseNotes = info.releaseNotes.replace(rex , "");
 
           const dialogOpts = {
               type: 'info',
-              buttons: ['Right Now', 'Later'],
+              buttons: ['Install', 'Later'],
               cancelId: 1,
               title: 'Application Update',
               message: 'New version is available!',
-              detail: 'Version: '+info.version+'\nReleaseDate: '+info.releaseDate+'\nReleaseName: '+info.releaseName+'\nReleaseNotes: '+releaseNotes+'\n\nTo install the latest updates, Please choose "Right Now" or else you can choose "Later" option!'
+              detail: 'Version: '+info.version+'\nReleaseDate: '+info.releaseDate+'\nReleaseName: '+info.releaseName+'\nReleaseNotes: '+releaseNotes+'\n\nTo install the latest updates, Please choose "Install" or else you can choose "Later" option!'
             }
 
             dialog.showMessageBox(dialogOpts, (response) => {
@@ -122,7 +156,33 @@ var mainWindow = null;
                   }
                   dialog.showMessageBox(dialogOptions, (response) => {
                     autoUpdater.downloadUpdate();
+                    progressBar = new ProgressBar({
+                    indeterminate: false,
+                    text: 'Downloading latest updates...',
+                    detail: 'Wait...'
+                    });
+                    autoUpdater.on('download-progress', (progressObj) => {
+                      console.log('progress start...');
+                      console.log(progressObj);
+                      let log_message = "Download speed: " + progressObj.bytesPerSecond;
+                      log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+                      log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+                      progressBar
+                          .on('completed', function() {
+                            console.info('completed...');
+                            progressBar.detail = 'Download completed.';
+                          })
+                          .on('aborted', function(value) {
+                            console.info('aborted... ${value}');
+                          })
+                          .on('progress', function(value) {
+                            progressBar.detail = log_message;
+                          });
+                        progressBar.value = progressObj.percent;
+
+                    })
                     autoUpdater.on('update-downloaded', function (event, releaseNotes, releaseName) {
+                      progressBar.close();
                       console.log('------------xxxxxxxxxx-------');
                       const dialogOpts = {
                           type: 'info',
@@ -176,7 +236,7 @@ app.on('ready',function(){
   }));
 
   // Open the DevTools
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   // notify user if update is available
    autoUpdater.checkForUpdates();

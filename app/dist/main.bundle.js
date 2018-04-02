@@ -1077,7 +1077,7 @@ var HeaderComponent = (function () {
     }
     HeaderComponent.prototype.ngOnInit = function () {
         if (localStorage.getItem('imagePath') != '' && localStorage.getItem('imagePath') != null) {
-            this.imagePath = 'http://localhost:3000/api/fetch-logo?path=' + localStorage.getItem('imagePath');
+            this.imagePath = localStorage.getItem('imagePath');
             this.logoToggle = true;
         }
         else {
@@ -1095,7 +1095,7 @@ var HeaderComponent = (function () {
     };
     HeaderComponent.prototype.getImagePath = function () {
         if (localStorage.getItem('imagePath') != '' && localStorage.getItem('imagePath') != null) {
-            this.imagePath = 'http://localhost:3000/api/fetch-logo?path=' + localStorage.getItem('imagePath');
+            this.imagePath = localStorage.getItem('imagePath');
             this.logoToggle = true;
             return this.imagePath;
         }
@@ -1266,7 +1266,7 @@ var LoginComponent = (function () {
             this.user.password = localStorage.getItem('password');
         }
         if (localStorage.getItem('imagePath') != '' && localStorage.getItem('imagePath') != null) {
-            this.imagePath = 'http://localhost:3000/api/fetch-logo?path=' + localStorage.getItem('imagePath');
+            this.imagePath = localStorage.getItem('imagePath');
             this.logoToggle = true;
         }
         else {
@@ -1303,7 +1303,7 @@ var LoginComponent = (function () {
     };
     LoginComponent.prototype.getImagePath = function () {
         if (localStorage.getItem('imagePath') != '' && localStorage.getItem('imagePath') != null) {
-            this.imagePath = 'http://localhost:3000/api/fetch-logo?path=' + localStorage.getItem('imagePath');
+            this.imagePath = localStorage.getItem('imagePath');
             this.logoToggle = true;
             return this.imagePath;
         }
@@ -1452,7 +1452,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/components/logo/logo.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h4>Manage Logo </h4>\n<hr>\n\n<div class=\"row\" *ngIf=\"!colorToggle\">\n  <form #logoForm=\"ngForm\" (ngSubmit)=\"submitLogo()\">\n    <div class=\"col-sm-8\">\n      <!-- COMPONENT START -->\n\t<div class=\"form-group\">\n\t\t<div class=\"input-group input-file\" name=\"logo\">\n\t\t\t<span class=\"input-group-btn\">\n        <label class=\"btn-bs-file btn  btn-success\">\n                Browse\n                <input #fileInput type=\"file\"  accept=\"image/*\" (change)=\"handleInputChange($event)\" ng2FileSelect [uploader]=\"imageUploader\" required/>\n            </label>\n    \t\t</span>\n    \t\t<input type=\"text\" class=\"form-control\" [(ngModel)]=\"inputLogo\" name=\"inputLogo\" placeholder='Choose a logo...' />\n    \t\t<span class=\"input-group-btn\">\n       \t\t\t <button type=\"submit\" class=\"btn btn-danger btn-reset\">Submit</button>\n    \t\t</span>\n\t\t</div>\n\t</div>\n\t<!-- COMPONENT END -->\n    </div>\n  </form>\n</div>\n"
+module.exports = "<h4>Manage Logo </h4>\n<hr>\n\n<div class=\"row\" *ngIf=\"!colorToggle\">\n  <form #logoForm=\"ngForm\" (ngSubmit)=\"submitLogo(logoForm)\">\n    <div class=\"col-sm-8\">\n      <!-- COMPONENT START -->\n\t<div class=\"form-group\">\n\t\t<div class=\"input-group input-file\" name=\"logo\">\n\t\t\t<span class=\"input-group-btn\">\n        <label class=\"btn-bs-file btn  btn-success\">\n                Browse\n                <input #fileInput type=\"file\"  accept=\"image/*\" (change)=\"handleInputChange($event)\" ng2FileSelect [uploader]=\"imageUploader\" required/>\n            </label>\n    \t\t</span>\n    \t\t<input type=\"text\" class=\"form-control\" [(ngModel)]=\"inputLogo\" name=\"inputLogo\" placeholder='Choose a logo...' />\n    \t\t<span class=\"input-group-btn\">\n       \t\t\t <!-- <button type=\"submit\" class=\"btn btn-danger btn-reset\">Submit</button> -->\n    \t\t</span>\n\t\t</div>\n\t</div>\n\t<!-- COMPONENT END -->\n    </div>\n  </form>\n</div>\n"
 
 /***/ }),
 
@@ -1465,7 +1465,8 @@ module.exports = "<h4>Manage Logo </h4>\n<hr>\n\n<div class=\"row\" *ngIf=\"!col
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ng2_file_upload___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_ng2_file_upload__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__ = __webpack_require__("../../../../ng2-toastr/ng2-toastr.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__("../../../router/@angular/router.es5.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ng4_loading_spinner__ = __webpack_require__("../../../../ng4-loading-spinner/ng4-loading-spinner.esm.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__("../../../router/@angular/router.es5.js");
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LogoComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1480,12 +1481,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var URL = 'http://localhost:3000/api/upload/logo';
 var LogoComponent = (function () {
-    function LogoComponent(toastr, router) {
+    function LogoComponent(toastr, router, spinnerService) {
         var _this = this;
         this.toastr = toastr;
         this.router = router;
+        this.spinnerService = spinnerService;
         this.logo = '';
         this.inputLogo = '';
         // image variables
@@ -1544,9 +1547,29 @@ var LogoComponent = (function () {
         this.imageUploader.uploadAll();
     };
     LogoComponent.prototype.handleInputChange = function (event) {
+        var _this = this;
         var image = event.target.files[0];
-        console.log(image);
+        console.log(event.target.files[0]);
         this.inputLogo = image.name;
+        if (this.inputLogo == '') {
+            this.toastr.error('Please select the logo!', 'Oops!');
+            return;
+        }
+        this.spinnerService.show();
+        var image = event.target.files[0];
+        //console.log(event.target.files[0]);
+        if (event.target.files && event.target.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                //this.imagePath = event.target.result;
+                localStorage.setItem('imagePath', event.target.result);
+                //console.log(event.target.result);
+                _this.spinnerService.hide();
+                _this.toastr.success('Logo has been changed successfully!', 'Success!');
+                _this.inputLogo = '';
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
         var pattern = /image-*/;
         //var reader = new FileReader();
         if (!image.type.match(pattern)) {
@@ -1554,14 +1577,9 @@ var LogoComponent = (function () {
             //of course you can show an alert message here
         }
     };
-    LogoComponent.prototype.submitLogo = function () {
+    LogoComponent.prototype.submitLogo = function (event) {
         console.log("-----");
-        if (this.inputLogo == '') {
-            this.toastr.error('Please select the logo!', 'Oops!');
-            return;
-        }
-        this.uploadImage();
-        //this.convertImageToBase64(this.logo);
+        console.log(event);
     };
     return LogoComponent;
 }());
@@ -1575,10 +1593,10 @@ LogoComponent = __decorate([
         template: __webpack_require__("../../../../../src/app/components/logo/logo.component.html"),
         styles: [__webpack_require__("../../../../../src/app/components/logo/logo.component.css")]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__["ToastsManager"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__["ToastsManager"]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["b" /* Router */]) === "function" && _b || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__["ToastsManager"] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_ng2_toastr_ng2_toastr__["ToastsManager"]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_4__angular_router__["b" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__angular_router__["b" /* Router */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3_ng4_loading_spinner__["b" /* Ng4LoadingSpinnerService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3_ng4_loading_spinner__["b" /* Ng4LoadingSpinnerService */]) === "function" && _c || Object])
 ], LogoComponent);
 
-var _a, _b;
+var _a, _b, _c;
 //# sourceMappingURL=logo.component.js.map
 
 /***/ }),

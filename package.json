@@ -1,6 +1,6 @@
 {
   "name": "cloud_export",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "This is the desktop-app for pdf exports and auto scheduler jobs",
   "main": "main.js",
   "scripts": {
@@ -34,6 +34,7 @@
     "cors": "^2.8.4",
     "download-file": "^0.1.5",
     "electron-is-dev": "^0.3.0",
+    "electron-progressbar": "^1.0.4",
     "electron-squirrel-startup": "^1.0.0",
     "electron-updater": "^2.21.1",
     "express": "^4.16.2",
