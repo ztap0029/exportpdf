@@ -20,17 +20,5 @@
 <script type="text/javascript" src="inline.bundle.js"></script><script type="text/javascript" src="polyfills.bundle.js"></script><script type="text/javascript" src="scripts.bundle.js"></script><script type="text/javascript" src="styles.bundle.js"></script>
 <script type="text/javascript" src="vendor.bundle.js"></script>
 <script type="text/javascript" src="main.bundle.js"></script>
-
-<!-- get message for updates -->
-<script type="text/javascript">
-// Listen for messages
-const {ipcRenderer} = require('electron');
-ipcRenderer.on('message', function(event, text) {
-var container = document.getElementById('messages');
-var message = document.createElement('div');
-message.innerHTML = text;
-container.appendChild(message);
-})
-</script>
 </body>
 </html>

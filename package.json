@@ -1,6 +1,6 @@
 {
   "name": "cloud_export",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "This is the desktop-app for pdf exports and auto scheduler jobs",
   "main": "main.js",
   "scripts": {
@@ -12,8 +12,9 @@
     "url": "https://github.com/ztap0029/exportpdf.git"
   },
   "publish": {
-      "provider": "github"
-    },
+    "provider": "github",
+    "url": "https://github.com/ztap0029/exportpdf.git"
+  },
   "author": "Brixxs",
   "license": "ISC",
   "build": {
